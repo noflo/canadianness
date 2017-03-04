@@ -2,7 +2,7 @@ noflo = require 'noflo'
 
 exports.getComponent = ->
   c = new noflo.Component
-    description: 'Test using fbp-spec'
+    description: 'Convert input array to a NoFlo stream'
     inPorts:
       in:
         datatype: 'array'

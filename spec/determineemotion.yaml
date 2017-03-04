@@ -1,12 +1,13 @@
 topic: "canadianness/DetermineEmotion"
 name: "Determine Emotion fbpspec"
+timeout: 10000
 fixture:
  type: 'fbp'
  data: |
   # @runtime noflo-nodejs
-  INPORT=TestDetermineEmotion.IN:IN
+  INPORT=stream.IN:IN
   OUTPORT=DetermineEmotion.EMOTION:EMOTION
-  TestDetermineEmotion(canadianness/TestDetermineEmotion) OUT -> CONTENT DetermineEmotion(canadianness/DetermineEmotion)
+  stream(canadianness/ArrayToStream) OUT -> CONTENT DetermineEmotion(canadianness/DetermineEmotion)
 
 cases:
 -
