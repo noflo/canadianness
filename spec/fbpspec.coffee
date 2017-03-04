@@ -8,7 +8,7 @@ nodeRuntime =
   secret: 'notasecret'
   address: "ws://localhost:3333"
   id: "7807f4d8-63e0-4a89-a577-2770c14f8106"
-  command: './node_modules/.bin/noflo-nodejs --verbose --catch-exceptions=false --secret notasecret --port=3333 --host=localhost --register=false --capture-output=true --debug=true'
+  command: './node_modules/.bin/noflo-nodejs --verbose --catch-exceptions=false --secret notasecret --port=3333 --host=localhost --register=false --debug=true'
 
 fbpspec.mocha.run nodeRuntime, './spec',
   fixturetimeout: 50000
