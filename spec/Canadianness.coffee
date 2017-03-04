@@ -36,7 +36,7 @@ describe 'Canadianness graph', ->
 
   # we only need to load the graph once, so it is in the before
   before (done) ->
-    @timeout 4000
+    @timeout 10*1000
     loader = new noflo.ComponentLoader baseDir
     loader.load 'canadianness/Canadianness', (err, instance) ->
       return done err if err
