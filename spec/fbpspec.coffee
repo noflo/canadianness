@@ -11,5 +11,5 @@ nodeRuntime =
   command: './node_modules/.bin/noflo-nodejs --verbose --catch-exceptions=false --secret notasecret --port=3333 --host=localhost --register=false --debug=true'
 
 fbpspec.mocha.run nodeRuntime, './spec',
-  fixturetimeout: 50000
-  starttimeout: 100000
+  fixturetimeout: 10000
+  starttimeout: 10000
