@@ -15,12 +15,8 @@ exports.getComponent = ->
         required: true
 
   c.process (input, output) ->
-    # if it is not data, remove it from the buffer
-    return input.buffer.get().pop() if input.ip.type isnt 'data'
-    return unless input.has 'in'
+    return unless input.hasData 'in'
 
-    # needs the extra closeBracket
-    # because of the extra connect in translation layer
     output.send out: new noflo.IP 'openBracket'
 
     datas = input.getData 'in'
@@ -29,6 +25,5 @@ exports.getComponent = ->
     for data in datas
       output.send out: new noflo.IP 'data', data
 
-    output.send out: new noflo.IP 'closeBracket'
     output.send out: new noflo.IP 'closeBracket'
     output.done()
