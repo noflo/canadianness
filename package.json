@@ -32,7 +32,7 @@
     "mocha": "^2.5.3",
     "noflo-nodejs": "^0.8.1",
     "noflo-runtime-base": "^0.8.2",
-    "noflo-tester": "^0.1.1"
+    "noflo-wrapper": "^0.1.2"
   },
   "scripts": {
     "start": "noflo-nodejs --trace --debug",

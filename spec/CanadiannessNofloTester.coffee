@@ -1,8 +1,8 @@
-Tester = require 'noflo-tester'
+Tester = require 'noflo-wrapper'
 chai = require 'chai'
 
 describe 'FindWords component', ->
-  t = new Tester 'canadianness/FindWords'
+  t = new Tester 'canadianness/FindWords', cache: false
   before (done) ->
     t.start (err, instance) ->
       return throw err if err
