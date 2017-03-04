@@ -47,9 +47,9 @@ describe 'Canadianness graph', ->
 
       # because it is a graph, we want to wait until it is ready
       c.once 'ready', ->
-        c.start()
-        # for asyncish
-        setTimeout done, 1
+        c.start () ->
+          # for asyncish
+          setTimeout done, 1
 
   # before each test we want to attach all of the outports
   # (we also attach the inports here as well so the `before` is simpler)
