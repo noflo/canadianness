@@ -248,11 +248,8 @@ describe 'DetermineEmotion component', ->
         chai.expect(data).to.eql 'neutral'
         done()
 
-      # needs the extra closeBracket
-      # because of the extra connect in translation layer
       content.send new noflo.IP 'openBracket'
       content.send new noflo.IP 'data', 'eh'
-      content.send new noflo.IP 'closeBracket'
       content.send new noflo.IP 'closeBracket'
 
   describe 'with content eh!', ->

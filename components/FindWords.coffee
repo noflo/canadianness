@@ -50,18 +50,14 @@ exports.getComponent = ->
   c.forwardBrackets =
     content: 'matches'
   c.process (input, output) ->
-    # if it is not data, remove it from the buffer
-    return input.buffer.get().pop() if input.ip.type isnt 'data'
     # make sure we have data in the required inPorts
-    return unless input.has 'word', 'content', (ip) -> ip.type is 'data'
+    return unless input.hasData 'word', 'content'
+    # get the data from our in ports
+    [ word, content ] = input.getData 'word', 'content'
 
     # since we are sending out multiple `data` IPs
     # we want to wrap them in brackets
     output.send matches: new noflo.IP 'openBracket', content
-
-    # get the data from our in ports
-    word = input.getData 'word'
-    content = input.getData 'content'
 
     # do our word processing
     r = /([.?!]*eh[.?!]*)/gi
