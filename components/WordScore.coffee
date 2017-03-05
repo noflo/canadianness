@@ -1,7 +1,9 @@
+# ## Import libraries
 noflo = require 'noflo'
 natural = require 'natural'
 tokenizer = new natural.WordTokenizer()
 
+# ## Component declaration
 exports.getComponent = ->
   c = new noflo.Component
     description: 'Find how the input words compare against the list of weighted words'
@@ -21,13 +23,16 @@ exports.getComponent = ->
         description: 'the resulting number of comparing the content with the list'
         required: true
 
-  # we are only using data, so we do not need any brackets sent to the inPorts, pass them along
+  # ## Processing function
+  #
+  # To preserve streams, forward brackets from the inports to the output.
   c.forwardBrackets =
     list: 'out'
     content: 'out'
 
   c.process (input, output) ->
-    # our precondition, make sure it has both before trying to get the data
+
+    # ## Receive input
     return unless input.has 'list', 'content', (ip) -> ip.type is 'data'
 
     # get the data
@@ -37,6 +42,7 @@ exports.getComponent = ->
     content = ((input.getStream('content').filter (ip) -> ip.type is 'data').map (ip) -> ip.data)[0]
     list = input.getStream('list')[0].data
 
+    # ## Component business logic
     # our base score we will send out
     score = 0
 
@@ -88,6 +94,7 @@ exports.getComponent = ->
 
       score += scoringFunction data
 
+    # ## Send output
     # we could do `output.sendDone score` if we wanted
     # since there is only one outport it will know which one we mean
     output.sendDone score: score

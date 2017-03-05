@@ -1,6 +1,11 @@
+# ## Import libraries
 noflo = require 'noflo'
 
-# a helper to match all on a string
+# ## Helper functions
+#
+# Not NoFlo or even component-logic-specific, so nice to keep them separate
+
+# Return all RegExp matches on a string
 matchAll = (string, regexp) ->
   matches = []
   string.replace regexp, ->
@@ -12,24 +17,25 @@ matchAll = (string, regexp) ->
     return
   if matches.length then matches else []
 
-# since regexing will give the `index` and the `input`, we only want the match
+# Extract the actual data of the match result
 actualMatches = (matches) ->
   # because we want to send out an empty array if there are no matches
   return [[]] if matches.length is 0
   matches.map (match) -> match[0]
 
+# ## Component declaration
 exports.getComponent = ->
   c = new noflo.Component
     description: 'Find all of the instances of `word` in `content` and send them out in a stream'
     inPorts:
+      content:
+        datatype: 'string'
+        description: 'the content which we look for a word in'
+        required: true
       word:
         datatype: 'string' # could be array|string, which would be `all`
         description: 'the word we are looking for instances of'
         control: true
-        required: true
-      content:
-        datatype: 'string'
-        description: 'the content which we look for the word in'
         required: true
       surrounding: # could use a regex but this is a specific case
         datatype: 'boolean'
@@ -42,21 +48,25 @@ exports.getComponent = ->
         description: 'the resulting findings as a stream of data packets'
         required: true
 
-  # we are only using data,
-  # so we do not need any brackets sent to the inPorts, pass them along
+  # ## Processing function
   #
-  # control ports do not have brackets,
-  # so we don't need to do anything special with them
+  # To preserve streams, forward brackets from the primary inport `content` to the output.
   c.forwardBrackets =
     content: 'matches'
   c.process (input, output) ->
-    # make sure we have data in the required inPorts
+
+    # ### Receiving input data
+    #
+    # We need both a `word`, and `content` to start processing
+    # Since `word` is a control port, the latest value is kept, no need to continiously send
     return unless input.hasData 'word', 'content'
-    # get the data from our in ports
     [ word, content ] = input.getData 'word', 'content'
 
+    # ### Component business logic
+    #
     # since we are sending out multiple `data` IPs
     # we want to wrap them in brackets
+    # TODO: make exception safe
     output.send matches: new noflo.IP 'openBracket', content
 
     # do our word processing
@@ -64,6 +74,8 @@ exports.getComponent = ->
     matches = matchAll content, r
     matches = actualMatches matches
 
+    # ### Sending output
+    #
     # for each of our matches, send them out
     for match in matches
       # if you just send content, it will automatically put it in a data ip
