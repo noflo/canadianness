@@ -25,29 +25,26 @@ exports.getComponent = ->
 
   # ## Processing function
   #
-  # To preserve streams, forward brackets from the inports to the output.
-  c.forwardBrackets =
-    list: 'out'
-    content: 'out'
+  # To preserve streams, forward brackets from the primary inport to the output.
+  c.forwardBrackets = {}
 
   c.process (input, output) ->
 
-    # ## Receive input
-    return unless input.has 'list', 'content', (ip) -> ip.type is 'data'
+    # ### Receive input
+    return unless input.hasStream 'content'
+    return unless input.hasData 'list'
+    content = input.getStream('content').filter((ip) -> ip.type is 'data').map((ip) -> ip.data)
+    list = input.getData 'list'
 
-    # get the data
-    # content = input.getData 'content'
-    # list = input.getData 'list'
-    # @TODO: temporary hack since getData does not behave as one expects, change when fixed
-    content = ((input.getStream('content').filter (ip) -> ip.type is 'data').map (ip) -> ip.data)[0]
-    list = input.getStream('list')[0].data
+    # there can be multiple pieces of content
+    content = content.join('\n')
 
-    # ## Component business logic
+    # ### Component business logic
     # our base score we will send out
     score = 0
 
     # splits content into an array of words
-    contents = tokenizer.tokenize content
+    tokens = tokenizer.tokenize content
 
     # if the list has the word in it, return the score
     # otherwise, 0 points
@@ -82,7 +79,7 @@ exports.getComponent = ->
     nounInflector = new natural.NounInflector()
 
     # go through each item in contents
-    for data in contents
+    for data in tokens
       plural = nounInflector.pluralize data
       singular = nounInflector.singularize data
 
@@ -94,7 +91,5 @@ exports.getComponent = ->
 
       score += scoringFunction data
 
-    # ## Send output
-    # we could do `output.sendDone score` if we wanted
-    # since there is only one outport it will know which one we mean
+    # ### Send output
     output.sendDone score: score
