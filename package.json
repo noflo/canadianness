@@ -16,7 +16,7 @@
   "dependencies": {
     "coffee-script": "^1.12.0",
     "natural": "^0.4.0",
-    "noflo": "0.x >= 0.8",
+    "noflo": "0.x >= 0.8.2",
     "noflo-core": "^0.4.0",
     "noflo-math": "^0.1.1"
   },
@@ -31,9 +31,7 @@
     "mocha": "^2.5.3",
     "noflo-filesystem": "^1.1.1",
     "noflo-nodejs": "^0.8.1",
-    "noflo-runtime-base": "^0.8.2",
-    "noflo-strings": "^0.3.0",
-    "noflo-wrapper": "^0.1.2"
+    "noflo-strings": "^0.3.0"
   },
   "scripts": {
     "start": "noflo-nodejs --trace --debug",
