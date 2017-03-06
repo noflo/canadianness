@@ -1,5 +1,5 @@
 topic: "canadianness/DetermineEmotion"
-name: "Determine Emotion fbpspec"
+name: "DetermineEmotion component"
 timeout: 10000
 fixture:
  type: 'fbp'

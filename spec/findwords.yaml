@@ -1,5 +1,4 @@
 topic: "canadianness/FindWords"
-name: "Find words fbpspec"
 cases:
 -
   name: 'content eh'

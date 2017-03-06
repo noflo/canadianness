@@ -7,7 +7,6 @@
     "candian",
     "canadianness"
   ],
-  "main": "./index.coffee",
   "author": "aretecode <aretecode@gmail.com>",
   "license": "MIT",
   "repository": {

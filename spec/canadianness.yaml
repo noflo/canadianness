@@ -1,5 +1,5 @@
 topic: "canadianness/Canadianness"
-name: "Canadianness fbpspec"
+name: "Canadianness graph"
 fixture:
  type: 'fbp'
  data: |

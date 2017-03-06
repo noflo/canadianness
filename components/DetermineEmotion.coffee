@@ -1,6 +1,9 @@
+# ## Import libraries
 noflo = require 'noflo'
 
-# https://en.wikipedia.org/wiki/Mode_(statistics)
+# ## Useful functions
+#
+# Function to calculate most common value (the [mode](https://en.wikipedia.org/wiki/Mode_(statistics))
 findMode = (array) ->
   frequency = {}
   maxFrequency = 0
@@ -12,7 +15,9 @@ findMode = (array) ->
       result = array[v]
   result
 
-# could also pass in full contents here and determine distance from each other
+# ## Component declaration
+#
+# Define the input and output ports, and describe their function
 exports.getComponent = ->
   c = new noflo.Component
     description: 'Find all of the instances of `word` in `content` and send them out in a stream'
@@ -29,21 +34,30 @@ exports.getComponent = ->
       error:
         datatype: 'object'
 
-  # we are using brackets to group the stream, so we do not want to forward them
+  # ## Processing function
+  #
   c.process (input, output) ->
+   
+    # ### Receiving input
+    #
+    # We expect a [stream](noflojs.org/documentation/process-api/#full-stream)
+    # Will also accept a single (non-bracketed) input packet, returned as a stream of length 1
     return unless input.hasStream 'content'
-
-    # we get the [full stream](noflojs.org/documentation/process-api/#full-stream)
     contents = input.getStream 'content'
 
-    # since it has `openBracket` and `closeBracket` we only want the dat
+    # The output will be a single packet (not a stream),
+    # hence we drop the `openBracket` and `closeBracket`
     contents = contents.filter (ip) -> ip.type is 'data'
 
-    # since it is an array of IP objects,
-    # they contain other properties, we only want the data
+    # extract the data payload from the IP objects
     contents = contents.map (ip) -> ip.data
 
-    # to hold the emotion matches
+    # ### Component business logic
+    #
+    # First find which emotions are present, then calculate which one is most common.
+    # This could alternatively be split into two dedicate components.
+
+    # to hold the emotions found
     matches = []
 
     # the emotions we will use
@@ -65,11 +79,14 @@ exports.getComponent = ->
         if content in data
           matches.push emotion
 
-    # if we didn't get any emotions, it is default neutral
+    # if we didn't get any emotions, it default to 'neutral'
     if matches.length is 0
       mode = 'neutral'
     # if we did, we need to find the emotion that was the most common
     else
       mode = findMode matches
 
+    # ### Send output
+    #
+    # Also signals completion by using `sendDone()`
     output.sendDone emotion: mode
