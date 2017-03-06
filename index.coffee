@@ -6,16 +6,16 @@ unless noflo.isBrowser()
 else
   baseDir = '/canadianness'
 
-spellingData = require './spellingdata.json'
-listData = {"eh": 11, "eh!": 11}
+defaultSpellingData = require './spellingdata.json'
+defaultWords = {"eh": 11, "eh!": 11}
 
-canadianness = (args, cb) ->
-  spellingData = args['spelling']
-  wordsData = args['words']
+canadianness = (contentData, options, callback) ->
+  spellingData = options.spelling or defaultSpellingData
+  wordsData = options.words or defaultWords
   # debugging [optional]
-  debug = args['debug'] or false
-  contentData = args['content']
+  debug = options.debug or false
 
+  # FIXME: use asCallback from NoFlo 0.8.2+
   loader = new noflo.ComponentLoader baseDir
   # project name / graph or component name
   loader.load 'canadianness/Canadianness', (err, instance) ->
@@ -29,7 +29,7 @@ canadianness = (args, cb) ->
       if debug
         tracer.attach instance.network
 
-      instance.start()
+      instance.start () ->
 
       # outPorts
       score = noflo.internalSocket.createSocket()
@@ -58,7 +58,10 @@ canadianness = (args, cb) ->
       # and log where we wrote it to
       finished = ->
         return unless scoreData? and emotionData?
-        cb emotionData, scoreData
+        data = 
+          score: scoreData
+          emotion: emotionData
+        return callback null, data, scoreData
 
         if debug
           tracer.dumpFile null, (err, f) ->
@@ -79,5 +82,24 @@ canadianness = (args, cb) ->
       spelling.send spellingData
       content.send contentData
 
-canadianness {spelling: spellingData, words: listData, content: 'eh', debug: true}, (score, emotion) ->
-  console.log score, emotion
+# Expose function as public API
+module.exports = canadianness
+
+# ## Command-line program
+main = () ->
+  content = process.argv[2]
+
+  options =
+    spelling: null
+    words: null    
+    debug: true    
+
+  canadianness content, options, (err, results) ->
+    if err
+      console.error err
+      process.exit 1
+    console.log results.score, results.emotion
+
+# Only run main if we are not imported as a module
+if not module.parent
+  main()
