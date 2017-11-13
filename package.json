@@ -34,6 +34,6 @@
     "postinstall": "noflo-cache-preheat",
     "start": "noflo-nodejs --trace --debug",
     "pretest": "eslint *.js components/*.js",
-    "test": "mocha -R spec -t 2000 spec/*.js"
+    "test": "mocha -R spec -t 2000 --exit spec/*.js"
   }
 }
