@@ -19,7 +19,7 @@ const canadianness = (contentData, options, callback) => {
   const wrapperFunction = noflo.asCallback(componentName, {
     baseDir: __dirname,
   });
-  return wrapperFunction(inputs, (err, results) => callback(err, results));
+  return wrapperFunction(inputs, callback);
 };
 
 // Expose function as public API
