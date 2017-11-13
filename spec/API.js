@@ -1,5 +1,4 @@
 const canadianness = require('../index.js');
-const chai = require('chai');
 
 describe('Javascript API', () =>
 
