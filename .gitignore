@@ -1,6 +1,4 @@
 /node_modules/
-spec/*.js
-spec/browser/*.js
 npm-debug.log
 .DS_Store
 .noflo.json
