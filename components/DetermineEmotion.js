@@ -43,6 +43,9 @@ exports.getComponent = () => {
     },
   });
 
+  // Since we want to work with a full stream, we disable bracket forwarding
+  c.forwardBrackets = {};
+
   // ## Processing function
   //
   c.process((input, output) => {
@@ -81,9 +84,9 @@ exports.getComponent = () => {
     // go through our content and our emotions
     // then add them to our `matches`
     contents.forEach((content) => {
-      emotions.forEach((emotion) => {
+      Object.keys(emotions).forEach((emotion) => {
         const data = emotions[emotion];
-        if (content.indexOf(data) !== -1) {
+        if (data.indexOf(content) !== -1) {
           matches.push(emotion);
         }
       });
