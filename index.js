@@ -3,15 +3,12 @@ const defaultSpellingData = require('./spellingdata.json');
 
 const defaultWords = {
   eh: 11,
-  "eh!": 11,
+  'eh!': 11,
 };
 
 const canadianness = (contentData, options, callback) => {
   const spellingData = options.spelling || defaultSpellingData;
   const wordsData = options.words || defaultWords;
-  // debugging [optional]
-  const debug = options.debug || false;
-
   const componentName = 'canadianness/Canadianness';
   const inputs = {
     words: wordsData,
@@ -29,23 +26,22 @@ const canadianness = (contentData, options, callback) => {
 module.exports = canadianness;
 
 // ## Command-line program
-const main = function() {
+function main() {
   const content = process.argv[2];
 
   const options = {
     spelling: null,
     words: null,
-    debug: true,
   };
 
-  canadianness(content, options, function(err, results) {
+  canadianness(content, options, (err, results) => {
     if (err) {
       console.error(err);
       process.exit(1);
     }
     console.log(results.score, results.emotion);
   });
-};
+}
 
 // Only run main if we are not imported as a module
 if (!module.parent) {

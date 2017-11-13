@@ -1,10 +1,11 @@
 // ## Import libraries
 const noflo = require('noflo');
 const natural = require('natural');
+
 const tokenizer = new natural.WordTokenizer();
 
 // ## Component declaration
-exports.getComponent = function() {
+exports.getComponent = () => {
   const c = new noflo.Component({
     description: 'Find how the input words compare against the list of weighted words',
     inPorts: {
@@ -12,21 +13,21 @@ exports.getComponent = function() {
         datatype: 'array',
         description: 'list of words we will use with the list of content',
         control: true,
-        required: true
+        required: true,
       },
       content: {
         datatype: 'string',
         description: 'the content which we will determine the score of',
-        required: true
-      }
+        required: true,
+      },
     },
     outPorts: {
       score: {
         datatype: 'number',
         description: 'the resulting number of comparing the content with the list',
-        required: true
-      }
-    }
+        required: true,
+      },
+    },
   });
 
   // ## Processing function
@@ -34,8 +35,7 @@ exports.getComponent = function() {
   // To preserve streams, forward brackets from the primary inport to the output.
   c.forwardBrackets = {};
 
-  c.process(function(input, output) {
-
+  c.process((input, output) => {
     // ### Receive input
     let scoringFunction;
     if (!input.hasStream('content')) { return; }
@@ -55,34 +55,35 @@ exports.getComponent = function() {
 
     // if the list has the word in it, return the score
     // otherwise, 0 points
-    const wordScore = function(word) {
+    const wordScore = (word) => {
       if (list[word] != null) {
         return list[word];
-      } else {
-        return 0;
       }
+      return 0;
     };
 
     // go through each of the comparisons in the list
     // if it is Canadian: 1, American: -1, British: .5, None: 0
-    const spellingScore = function(word) {
-      for (let comparison of Array.from(list)) {
-        if (!Array.from(comparison["American"]).includes(word)) {
-          if (Array.from(comparison["Canadian"]).includes(word)) {
-            return 1;
-          } else if (Array.from(comparison["British"]).includes(word)) {
-            return 0.5;
-          }
-        } else {
-          return -1;
+    const spellingScore = (word) => {
+      let value = 0;
+      list.forEach((comparison) => {
+        if (comparison.American.indexOf(word) !== -1) {
+          value = -1;
+          return;
         }
-      }
-
-      return 0;
+        if (comparison.Canadian.indexOf(word) !== -1) {
+          value = 1;
+          return;
+        }
+        if (comparison.British.indexOf(word) !== -1) {
+          value = 0.5;
+        }
+      });
+      return value;
     };
 
     // if it has this, it is a spelling list
-    if ((list[0] != null ? list[0]["Canadian"] : undefined) != null) {
+    if ((list[0] != null ? list[0].Canadian : undefined) != null) {
       scoringFunction = spellingScore;
     // otherwise it is an object list of words with scores
     } else {
@@ -93,7 +94,7 @@ exports.getComponent = function() {
     const nounInflector = new natural.NounInflector();
 
     // go through each item in contents
-    for (let data of Array.from(tokens)) {
+    tokens.forEach((data) => {
       const plural = nounInflector.pluralize(data);
       const singular = nounInflector.singularize(data);
 
@@ -106,10 +107,12 @@ exports.getComponent = function() {
       }
 
       score += scoringFunction(data);
-    }
+    });
 
     // ### Send output
-    output.sendDone({score});
+    output.sendDone({
+      score,
+    });
   });
 
   return c;

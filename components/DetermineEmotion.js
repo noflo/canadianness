@@ -4,19 +4,19 @@ const noflo = require('noflo');
 // ## Useful functions
 //
 // Function to calculate most common value (the [mode](https://en.wikipedia.org/wiki/Mode_(statistics))
-const findMode = function(array) {
+function findMode(array) {
   const frequency = {};
   let maxFrequency = 0;
-  let result = undefined;
-  for (let v in array) {
-    frequency[array[v]] = (frequency[array[v]] || 0) + 1;
-    if (frequency[array[v]] > maxFrequency) {
-      maxFrequency = frequency[array[v]];
-      result = array[v];
+  let result;
+  array.forEach((v) => {
+    frequency[v] = (frequency[v] || 0) + 1;
+    if (frequency[v] > maxFrequency) {
+      maxFrequency = frequency[v];
+      result = v;
     }
-  }
+  });
   return result;
-};
+}
 
 // ## Component declaration
 //
@@ -28,39 +28,34 @@ exports.getComponent = () => {
       content: {
         datatype: 'string',
         description: 'the content which we look for the word in',
-        required: true
-      }
+        required: true,
+      },
     },
     outPorts: {
       emotion: {
         datatype: 'string',
         description: 'the emotion based the content in ehs',
-        required: true
+        required: true,
       },
       error: {
-        datatype: 'object'
-      }
-    }
+        datatype: 'object',
+      },
+    },
   });
 
   // ## Processing function
   //
   c.process((input, output) => {
-   
     // ### Receiving input
     //
     // We expect a [stream](noflojs.org/documentation/process-api/#full-stream)
     // Will also accept a single (non-bracketed) input packet, returned as a stream of length 1
-    let emotion, mode;
     if (!input.hasStream('content')) { return; }
-    let contents = input.getStream('content');
 
     // The output will be a single packet (not a stream),
     // hence we drop the `openBracket` and `closeBracket`
-    contents = contents.filter(ip => ip.type === 'data');
-
-    // extract the data payload from the IP objects
-    contents = contents.map(ip => ip.data);
+    // and extract the data payload from the IP objects
+    const contents = input.getStream('content').filter(ip => ip.type === 'data').map(ip => ip.data);
 
     // ### Component business logic
     //
@@ -80,7 +75,7 @@ exports.getComponent = () => {
       anticipation: ['eh?!'],
       excitment: ['EH!', 'eH!'],
       sadness: ['...eh', '...eh...', '..eh', 'eh..', '..eh..'],
-      anger: ['EH!?', 'EH?']
+      anger: ['EH!?', 'EH?'],
     };
 
     // go through our content and our emotions
@@ -95,6 +90,7 @@ exports.getComponent = () => {
     });
 
     // if we didn't get any emotions, it default to 'neutral'
+    let mode;
     if (matches.length === 0) {
       mode = 'neutral';
     // if we did, we need to find the emotion that was the most common
@@ -105,7 +101,9 @@ exports.getComponent = () => {
     // ### Send output
     //
     // Also signals completion by using `sendDone()`
-    output.sendDone({emotion: mode});
+    output.sendDone({
+      emotion: mode,
+    });
   });
 
   return c;
