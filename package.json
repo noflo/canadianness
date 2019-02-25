@@ -27,7 +27,7 @@
     "mocha": "^6.0.0",
     "noflo-core": "^0.6.0",
     "noflo-filesystem": "^2.0.0",
-    "noflo-nodejs": "^0.10.0",
+    "noflo-nodejs": "^0.11.0",
     "noflo-strings": "^0.4.0"
   },
   "scripts": {
