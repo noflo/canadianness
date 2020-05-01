@@ -14,7 +14,7 @@
     "url": "https://github.com/noflo/canadianness.git"
   },
   "dependencies": {
-    "natural": "^0.6.0",
+    "natural": "^2.1.0",
     "noflo": "^1.0.0",
     "noflo-math": "^0.3.0"
   },
