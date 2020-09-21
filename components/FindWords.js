@@ -24,7 +24,7 @@ function matchAll(string, regexp) {
 function actualMatches(matches) {
   // because we want to send out an empty array if there are no matches
   if (matches.length === 0) { return [[]]; }
-  return matches.map(match => match[0]);
+  return matches.map((match) => match[0]);
 }
 
 // ## Component declaration
