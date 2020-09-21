@@ -40,7 +40,7 @@ exports.getComponent = () => {
     let scoringFunction;
     if (!input.hasStream('content')) { return; }
     if (!input.hasData('list')) { return; }
-    let content = input.getStream('content').filter(ip => ip.type === 'data').map(ip => ip.data);
+    let content = input.getStream('content').filter((ip) => ip.type === 'data').map((ip) => ip.data);
     const list = input.getData('list');
 
     // there can be multiple pieces of content

@@ -58,7 +58,7 @@ exports.getComponent = () => {
     // The output will be a single packet (not a stream),
     // hence we drop the `openBracket` and `closeBracket`
     // and extract the data payload from the IP objects
-    const contents = input.getStream('content').filter(ip => ip.type === 'data').map(ip => ip.data);
+    const contents = input.getStream('content').filter((ip) => ip.type === 'data').map((ip) => ip.data);
 
     // ### Component business logic
     //
