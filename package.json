@@ -14,8 +14,9 @@
     "url": "https://github.com/noflo/canadianness.git"
   },
   "dependencies": {
+    "coffeescript": "^2.5.1",
     "natural": "^2.1.5",
-    "noflo": "^1.0.0",
+    "noflo": "^1.3.0",
     "noflo-math": "^0.3.0"
   },
   "devDependencies": {
@@ -32,7 +33,7 @@
   },
   "scripts": {
     "postinstall": "noflo-cache-preheat",
-    "start": "noflo-nodejs --trace --debug",
+    "start": "noflo-nodejs --trace",
     "pretest": "eslint *.js components/*.js",
     "test": "mocha -R spec -t 2000 --exit spec/*.js"
   }
